@@ -67,12 +67,13 @@ public class Spell{
         //Cooldown is finished
         if(coolDownTimer >= COOLDOWN)
         {
-            coolDownTimer = COOLDOWN;
+            coolDownTimer = coolDown;
             return false;
         }
         else
         {
             coolDownTimer += Time.deltaTime;
+            //Debug.Log(COOLDOWN);
             return true;
         }
     }

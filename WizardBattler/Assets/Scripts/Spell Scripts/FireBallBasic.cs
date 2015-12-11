@@ -26,7 +26,7 @@ public class FireBallBasic : Spell
         };
 
         manaCost = 10.0f;
-        damage = new Damage(10, false, DAMAGE_TYPE.DAMAGE_TYPE_FIRE, new Burn(caster, caster.otherPlayer, EFFECT_TYPE.TYPE_DEBUFF, 100, 0.5f, 2.0f));
+        damage = new Damage(10, false, DAMAGE_TYPE.DAMAGE_TYPE_FIRE, new Burn(caster, caster.otherPlayer, EFFECT_TYPE.TYPE_DEBUFF, 100, 0.5f, 2.5f));
 
         elapsedTime = 0.0f;
         timeToCast = 3.0f;

@@ -4,24 +4,21 @@ using System.Collections.Generic;
 
 public class SpellPassing : MonoBehaviour {
 
-    public List<Spell> playerSpells;
+    public List<string> playerSpells;
     
 	// Use this for initialization
 	void Start () {
-        playerSpells = new List<Spell>();
+        playerSpells = new List<string>();
 
-        playerSpells.Add(new FireBallBasic(new Player()));
-        playerSpells.Add(new WaterBoltBasic(new Player()));
-        playerSpells.Add(new RockBasic(new Player()));
+        playerSpells.Add("Barrier");
+        playerSpells.Add("Awe");
+        playerSpells.Add("GraspingHands");
+        playerSpells.Add("RadiantFlare");
+        playerSpells.Add("Shock");
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
-
-    public void SetSpells(List<Spell> _spells)
-    {
-        playerSpells = _spells;
-    }
 }

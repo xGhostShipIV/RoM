@@ -20,7 +20,7 @@ public class MouseDraw : MonoBehaviour
     private Vector3 MousePosition;
 
     //A reference to the lineRenderer component. Used to draw our lines
-    private LineRenderer lr;
+    public LineRenderer lr;
 
     private Player player;
 

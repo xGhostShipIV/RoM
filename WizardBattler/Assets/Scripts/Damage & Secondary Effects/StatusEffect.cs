@@ -62,19 +62,27 @@ public class StatusEffect
     public void Apply()
     {
         int i = Random.Range(0, 101);
+        caster.pnb.CmdRandomSeed(Random.seed);
+
+        Debug.Log(i);
 
         if (i < chanceToApply)
         {
+            Debug.Log("TEST");
             //If the type is a debuff, roll again and check against the subjects fortitude
             //if you roll less apply debuff
-            if (type == EFFECT_TYPE.TYPE_DEBUFF)
+            if (type == EFFECT_TYPE.TYPE_DEBUFF && subject != caster)
             {
                 if (Random.Range(0, 101) > subject.Fortitude)
                 {
                     subject.statusManager.Add(this);
                 }
+                caster.pnb.CmdRandomSeed(Random.seed);
             }
-            else subject.statusManager.Add(this);
+            else
+            {
+                subject.statusManager.Add(this);
+            }
         }
     }
 

@@ -17,35 +17,53 @@ Loading E:\Game Projects\WizardBattler\Build\test_Data\Managed\UnityEngine.UI.dl
 Platform assembly: E:\Game Projects\WizardBattler\Build\test_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading E:\Game Projects\WizardBattler\Build\test_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\Game Projects\WizardBattler\Build\test_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.052 seconds
+- Completed reload, in  0.046 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: E:\Game Projects\WizardBattler\Build\test_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 858 -> priority: 1 
-  Thread -> id: 1100 -> priority: 1 
+  Thread -> id: 174c -> priority: 1 
+  Thread -> id: 1a60 -> priority: 1 
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.328109 ms
+UnloadTime: 0.281146 ms
+NullReferenceException: Object reference not set to an instance of an object
+  at MouseDraw.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+
+Unloading 24 unused Assets to reduce memory usage. Loaded Objects now: 4445.
+Total: 0.856811 ms (FindLiveObjects: 0.165142 ms CreateObjectMapping: 0.130309 ms MarkObjects: 0.367604 ms  DeleteObjects: 0.193443 ms)
+
 NullReferenceException: Object reference not set to an instance of an object
   at MouseDraw.Update () [0x00000] in <filename unknown>:0 
  
 (Filename:  Line: -1)
 
 NullReferenceException: Object reference not set to an instance of an object
-  at Player.Update () [0x00000] in <filename unknown>:0 
+  at MouseDraw.Update () [0x00000] in <filename unknown>:0 
  
 (Filename:  Line: -1)
-
-
-Unloading 11 unused Assets to reduce memory usage. Loaded Objects now: 4452.
-Total: 0.750142 ms (FindLiveObjects: 0.171674 ms CreateObjectMapping: 0.107607 ms MarkObjects: 0.343037 ms  DeleteObjects: 0.127511 ms)
 
 NullReferenceException: Object reference not set to an instance of an object
   at MouseDraw.Update () [0x00000] in <filename unknown>:0 
  
 (Filename:  Line: -1)
+
+Trying to send command for object without authority.
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at MouseDraw.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+82
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
 
 TEST
  

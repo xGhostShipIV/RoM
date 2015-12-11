@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using PDollarGestureRecognizer;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ public class Player : MonoBehaviour
 
 
     public bool Stunned;
+    public bool Silenced;
     public bool Immune;
 
     //Tracks current health
@@ -28,7 +30,11 @@ public class Player : MonoBehaviour
 
     //Variables for max health and mana
     private float health;
-    public float Health { get; set; }
+    public float Health 
+    {
+        get { return health; }
+        set { health = value; }
+    }
 
     //As it stands max mana is always 100
     private float mana;
@@ -197,11 +203,6 @@ public class Player : MonoBehaviour
     //In the update the active spell, if not null, will do stuff
     public Spell activeSpell;
 
-    //Test spells
-    public FireBallBasic spell;
-    public WaterBoltBasic spell2;
-    public RockBasic spell3;
-
     //A reference to this characters opponent
     public Player otherPlayer;
 
@@ -212,6 +213,9 @@ public class Player : MonoBehaviour
     public int playerIndex;
 
     public Sprite CharacterSprite;
+
+    public Image healthBar;
+    public Image manaBar;
 
     #endregion
 
@@ -230,7 +234,7 @@ public class Player : MonoBehaviour
 
         //A switch to check the elemental type of the damage and apply
         //appropriate damage resistances to said number
-        switch(_damageRecieved.damageType)
+        switch (_damageRecieved.damageType)
         {
             case DAMAGE_TYPE.DAMAGE_TYPE_AIR:
                 damageToDeal -= (damageToDeal * AirResistance);
@@ -252,17 +256,18 @@ public class Player : MonoBehaviour
                 break;
         }
 
-        if(_damageRecieved.statusEffect != null)
+        if (_damageRecieved.statusEffect != null)
         {
             _damageRecieved.statusEffect.Apply();
         }
 
         //Subtract damage from health
-        currentHealth -= damageToDeal;
+        if(!Immune)
+            currentHealth -= damageToDeal;
 
-        //Set the UI health bars
-        if (playerIndex == 0) uis.setPlayerOneHealth(currentHealth / health);
-        else uis.setPlayerTwoHealth(currentHealth / health);
+        ////Set the UI health bars
+        //if (playerIndex == 0) uis.setPlayerOneHealth(currentHealth / health);
+        //else uis.setPlayerTwoHealth(currentHealth / health);
 
         //If the damage interupts, then you know.. interupt them
         if (_damageRecieved.interups && activeSpell != null) activeSpell = activeSpell.CancelSpell(this);
@@ -272,6 +277,7 @@ public class Player : MonoBehaviour
     public void init(int _playerIndex, int _health)
     {
         pnb = GetComponent<PlayerNetworkBehavior>();
+        pnb.Init();
 
         playerIndex = _playerIndex;
 
@@ -283,18 +289,11 @@ public class Player : MonoBehaviour
 
         statusManager = new StatusManager();
 
-        SpellBook = new List<Spell>();
         spellsOnCooldown = new List<Spell>();
-
-        spell = new FireBallBasic(this);
-        SpellBook.Add(spell);
-        spell2 = new WaterBoltBasic(this);
-        SpellBook.Add(spell2);
-        spell3 = new RockBasic(this);
-        SpellBook.Add(spell3);
 
         Stunned = false;
         Immune = false;
+        Silenced = false;
 
         //Populates the Gesture array by passing it the points from all the spells
         //that exist in the spell book and assigns a string identifier to each
@@ -302,11 +301,24 @@ public class Player : MonoBehaviour
         {
             new Gesture(SpellBook[0].targetPoints, "spell1"),
             new Gesture(SpellBook[1].targetPoints, "spell2"),
-            new Gesture(SpellBook[2].targetPoints, "spell3")
+            new Gesture(SpellBook[2].targetPoints, "spell3"),
+            new Gesture(SpellBook[3].targetPoints, "spell4"),
+            new Gesture(SpellBook[4].targetPoints, "spell5")
         };
 
         //Grab the UI script from the only Canvas in the level
         uis = GameObject.Find("UI Prefab").GetComponent<UIScript>();
+
+        if (playerIndex == 0)
+        {
+            healthBar = uis.playerHealth;
+            manaBar = uis.playerMana;
+        }
+        else
+        {
+            healthBar = uis.opponentHealth;
+            manaBar = uis.opponentMana;
+        }
     }
 
     // Update is called once per frame
@@ -320,35 +332,37 @@ public class Player : MonoBehaviour
         }
 
         statusManager.UpdateEffects();
-        
+
         //This is just boring mana regen crap
         if (mana < 100)
         {
-            mana += ManaRegen / (1.0f / Time.deltaTime);
+            if (!Stunned)
+                mana += ManaRegen / (1.0f / Time.deltaTime);
 
             if (mana > 100) mana = 100;
 
-            if (playerIndex == 0) uis.setPlayerOneMana(mana / 100.0f);
-            else uis.setPlayerTwoMana(mana / 100.0f);
+            manaBar.fillAmount = mana / 100.0f;
         }
 
         //Regens health if you got health regen
-        if (healthRegen != 0)
-            if (currentHealth < Health)
-            {
+        if (currentHealth < Health)
+        {
+            if (!Stunned)
                 currentHealth += healthRegen / (1.0f / Time.deltaTime);
 
-                if (currentHealth >= Health) currentHealth = Health;
+            if (currentHealth >= Health) currentHealth = Health;
 
-                if (playerIndex == 0) uis.setPlayerOneHealth(currentHealth / 100.0f);
-                else uis.setPlayerTwoHealth(currentHealth / 100.0f);
-            }
+            healthBar.fillAmount = currentHealth / Health;
+        }
 
         for (int i = spellsOnCooldown.Count - 1; i >= 0; i--)
         {
-            if (!spellsOnCooldown[i].ManageCoolDown()) spellsOnCooldown.Remove(spellsOnCooldown[i]);
+            if (!spellsOnCooldown[i].ManageCoolDown())
+            {
+                spellsOnCooldown.Remove(spellsOnCooldown[i]);
+            }
         }
-        
+
     }
 
     /*
@@ -358,7 +372,7 @@ public class Player : MonoBehaviour
     */
     public bool LockedOut()
     {
-        return (activeSpell != null || Stunned == true);
+        return (activeSpell != null || Stunned == true || Silenced == true);
     }
 
     public void checkDraw(Vector3[] _points)
@@ -393,7 +407,7 @@ public class Player : MonoBehaviour
                     pnb.SetSpellIndex(0);
                     activeSpell = SpellBook[0];
                     mana -= SpellBook[0].manaCost;
-                    uis.setPlayerOneMana(mana);
+                    //uis.setPlayerOneMana(mana);
                 }
 
                 break;
@@ -404,7 +418,7 @@ public class Player : MonoBehaviour
                     pnb.SetSpellIndex(1);
                     activeSpell = SpellBook[1];
                     mana -= SpellBook[1].manaCost;
-                    uis.setPlayerOneMana(mana);
+                    //uis.setPlayerOneMana(mana);
                 }
 
                 break;
@@ -415,9 +429,31 @@ public class Player : MonoBehaviour
                     pnb.SetSpellIndex(2);
                     activeSpell = SpellBook[2];
                     mana -= SpellBook[2].manaCost;
-                    uis.setPlayerOneMana(mana);
+                    //uis.setPlayerOneMana(mana);
                 }
 
+                break;
+
+            case "spell4":
+
+                if (!SpellBook[3].IsOnCooldown() && mana >= SpellBook[3].manaCost)
+                {
+                    pnb.SetSpellIndex(3);
+                    activeSpell = SpellBook[3];
+                    mana -= SpellBook[3].manaCost;
+                    //uis.setPlayerOneMana(mana);
+                }
+                break;
+
+            case "spell5":
+
+                if (!SpellBook[4].IsOnCooldown() && mana >= SpellBook[4].manaCost)
+                {
+                    pnb.SetSpellIndex(4);
+                    activeSpell = SpellBook[4];
+                    mana -= SpellBook[4].manaCost;
+                    //uis.setPlayerOneMana(mana);
+                }
                 break;
             default:
                 break;

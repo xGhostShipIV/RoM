@@ -52,13 +52,14 @@ public class GameStartUp : MonoBehaviour
             if (GameObject.FindGameObjectWithTag("player1") != null &&
                 GameObject.FindGameObjectWithTag("player2") != null)
             {
-                Debug.Log("TEST");
-
                 player1 = GameObject.FindGameObjectWithTag("player1").GetComponent<Player>();
                 player2 = GameObject.FindGameObjectWithTag("player2").GetComponent<Player>();
 
                 player1.otherPlayer = player2;
                 player2.otherPlayer = player1;
+
+                //player1.pnb.Init();
+                //player2.pnb.Init();
 
                 player1.init(0, 100);
                 player2.init(1, 100);

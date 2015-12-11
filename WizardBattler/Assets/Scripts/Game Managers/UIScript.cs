@@ -26,6 +26,8 @@ public class UIScript : MonoBehaviour {
     public Image[] player2Buffs;
     public Image[] player2Debuffs;
 
+    public Image blindScreen;
+
 	// Use this for initialization
 	void Start () {
         timeToCast.text = "";
@@ -39,6 +41,8 @@ public class UIScript : MonoBehaviour {
             player2Buffs[i].enabled = false;
             player2Debuffs[i].enabled = false;
         }
+
+        blindScreen.enabled = false;
 	}
 	
 	// Update is called once per frame
